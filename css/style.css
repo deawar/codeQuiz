@@ -1,0 +1,15 @@
+.topline{
+    background-color: #ccc8c8;
+    /*width: 100%;*/
+}
+#highScores {
+    float:left;
+    width:50%;
+}
+
+#timer {
+   padding-right: 10px;
+    float: right;
+   /* width:50%;*/
+   
+}

@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <link rel="stylesheet" href="./css/style.css">
+    <title>JavaScript Code Quiz</title>
+</head>
+<body>
+    <div class="row mb-10px topline">
+        <div class="col-2 pl-4" id="highScores">
+            <a href="#"> View HighScores</a>
+        </div>
+        <div class="col-7"></div>
+        <div class="col-3 pl-5" id="timer">
+            Time: <span>75</span> seconds 
+        </div>
+      </div>
+    <div class="row">
+        <div class="col">
+        <p> </p>
+        </div>
+    </div>    
+    <div class = "container">
+        <div class="row">    
+            <!-- Intro Container -->
+            <div class="jumbotron" id="start">
+                <h1 class="display-6">JavaScript Code Quiz Challenge</h1>
+                <p class="lead">Try to answer the following random JavaScript questions within the 75 second timelimit. Be aware, you will lose 10 seconds for each wrong answer. See if you can earn a place on our High Score Board of Fame!!</p>
+                <hr class="my-4">
+                <p>Hit the "Start" button below to begin the game.</p>
+                <a class="btn btn-primary btn-lg" id="startBtn" href="#" role="button">Start</a>
+            </div>
+            
+            <!-- Quiz Container -->
+            <div id="quiz" style="display:none;">
+                <div id="qImage"><img src="img.png" alt=""></div>
+                <div id="question"><p>Question</p></div>
+                <div id="choices">
+                    <div class="choice" id="A" onclick="checkAnswer('A')"></div>
+                    <div class="choice" id="B" onclick="checkAnswer('B')"></div>
+                    <div class="choice" id="C" onclick="checkAnswer('C')"></div>
+                    <div class="choice" id="D" onclick="checkAnswer('D')"></div>
+                </div>
+            </div>
+
+            <!-- HighScore Container  -->
+            <div id="scoreContainer" style="display:none;">
+
+            </div>
+
+        </div>
+    </div>
+     
+    <footer>
+        <div id="btimeGauge"></div>
+        <div id="timeGauge"></div>
+    </footer>
+
+    <script src="./js/script.js"></script>  
+</body>
+
+</html>
