@@ -34,19 +34,34 @@
             </div>
             
             <!-- Quiz Container -->
-            <div id="quiz" style="display:none;">
-                <div id="qImage"><img src="img.png" alt=""></div>
-                <div id="question"><p>Question</p></div>
-                <div id="choices">
-                    <div class="choice" id="A" onclick="checkAnswer('A')"></div>
-                    <div class="choice" id="B" onclick="checkAnswer('B')"></div>
-                    <div class="choice" id="C" onclick="checkAnswer('C')"></div>
-                    <div class="choice" id="D" onclick="checkAnswer('D')"></div>
+            <div class="row justify-content-md-center">   
+                <div class="col-md-auto d-none" id="quiz">
+                    <!-- <img id="qImage" src="./assets/img.png" class="card-img-top"> -->
+                    <div id="qImage"><img src="./assets/img.png" alt=""></div>
+                    <div class="card-body" id="question"><p>Question</p></div>
+                    <div id="choices">
+                        <ul>
+                            <li class="choice btn btn-primary btn-block" id="A" onclick="checkAnswer('A')"></li>
+                            <li class="choice btn btn-primary btn-block" id="B" onclick="checkAnswer('B')"></li>
+                            <li class="choice btn btn-primary btn-block" id="C" onclick="checkAnswer('C')"></li>
+                            <li class="choice btn btn-primary btn-block" id="D" onclick="checkAnswer('D')"></li>
+                        </ul>
+                    </div>
+                    <div id="answer" style="display:none;">
+                        <div id="correct"></div>
+                        <div id="explination"></div>
+                    </div>
                 </div>
             </div>
-
+            <!-- Player's Score Container -->
+            <div id="playerScoreContainer" style="display:none;">You Scored: <span></span></div>
+            
             <!-- HighScore Container  -->
-            <div id="scoreContainer" style="display:none;">
+            <div class="card w-75 d-none" id="scoreContainer">
+                <h2>High Score Hall of Fame</h2>
+            <ul>
+                <li></li>
+            </ul>
 
             </div>
 

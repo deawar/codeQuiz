@@ -13,3 +13,12 @@
    /* width:50%;*/
    
 }
+
+.card.w-75 {
+    display: none;
+}
+
+.card-img-top {
+    width: 150px;
+    height: 100px;
+}

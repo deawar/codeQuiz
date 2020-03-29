@@ -2,39 +2,41 @@
 // Written by Dean Warren
 // GT Full Stack Flex Class Winter-Spring 2020
 var timer = 75;
-const playerScore = 0;
+var playerScore = 0;
 var highScore; //to be defined
 let runningQuestionIndex = 0; //keeps track of how many questions have been asked
 
 const quiz = document.getElementById("quiz");
 const qImg = document.getElementById("qImage");
 const question = document.getElementById("question");
-const timeGauge = document.getElementById("timeGauge");
+//const timeGauge = document.getElementById("timeGauge");
 let mySound;
 const start = document.getElementById("startBtn");
 const choiceA = document.getElementById("A");
 const choiceB = document.getElementById("B");
 const choiceC = document.getElementById("C");
 const choiceD = document.getElementById("D");
+const answer = document.getElementById("answer");
 const explination = document.getElementById("explination");
+const playerScoreContainer = document.getElementById("playerScoreContainer");
 const scoreContainer = document.getElementById("scoreContainer");
 
-let questions = [
+const questions = [
     {
-        question: "What is the HTML tag under which one can write the JavaScript code?",
-        imgSrc  : "assets/jsScriptTag.png",
-        choiceA : "<javascript>",
-        choiceB : "<scripted>",
-        choiceC : "<script>",
-        choiceD : "<js>",
+        question: "IsNaN() Evaluates And Argument To Determine if Given Value ",
+        imgSrc  : "./assets/JSLogo.png",
+        choiceA : "Is Not a Null",
+        choiceB : "Is Not a New Object",
+        choiceC : "Is Not a Number",
+        choiceD : "None of the above",
         correct : "C",
-        explination: "If we want to write a JavaScript code under HTML tag, you will have to use the “script” tag."  
+        explination: "IsNaN() Evaluates And Argument To Determine if Given Value"  
     },
     {
-        question: "Choose the correct JavaScript syntax to change the content of the following HTML code.",
-        imgSrc  : "assets/innerHTML.png",
+        question: "Choose the correct JavaScript syntax to change the content of the HTML code above.",
+        imgSrc  : "./assets/innerHTML.png",
         choiceA : "document.getElement(“geek”).innerHTML=”I am a Geek”;",
-        choiceB : "document.getElementById(“geek”).innerHTML=”I am a Geek;",
+        choiceB : "document.getElementById(“geek”).innerHTML='I am a Geek;'",
         choiceC : "document.getId(“geek”)=”I am a Geek”;",
         choiceD : "document.getElementById(“geek”).innerHTML=I am a Geek;",
         correct : "B",
@@ -42,7 +44,7 @@ let questions = [
     },
     {
         question: "Which of the following is the correct syntax to display “GeeksforGeeks” in an alert box using JavaScript?",
-        imgSrc  : "assets/alertGeeks.png",
+        imgSrc  : "./assets/GeeksforGeeksAlert.png",
         choiceA : "alertbox(“GeeksforGeeks”);",
         choiceB : "msg(“GeeksforGeeks”);",
         choiceC : "msgbox(“GeeksforGeeks”);",
@@ -51,18 +53,18 @@ let questions = [
         explination: "To display any text in the alert box, you need to write it as alert(“GeeksforGeeks”);."
     },
     {
-        question: "What is the correct syntax for referring to an external script called “geek.js”?",
-        imgSrc  : "assets/jsScriptTag.png",
-        choiceA : "<script src=”geek.js”>",
-        choiceB : "<script href=”geek.js”>",
-        choiceC : "<script ref=”geek.js”>",
-        choiceD : "<script name=”geek.js”>",
-        correct : "A",
-        explination: "The “src” term is used to refer to any JavaScript file."
+        question: "Which Of The Dialog Box Display a Message And a Data Entry Field?",
+        imgSrc  : "./assets/JSLogo.png",
+        choiceA : "Alert()",
+        choiceB : "Prompt()",
+        choiceC : "Confirm()",
+        choiceD : "Msg()",
+        correct : "B",
+        explination: "The “Promt()” Dialog box displays a message and waits for user input."
     },
     {
-        question: "The external JavaScript file must contain <script> tag. True or False?",
-        imgSrc  : "assets/jsScriptTag.png",
+        question: "The external JavaScript file must contain script tag. True or False?",
+        imgSrc  : "./assets/ScriptTag.png",
         choiceA : "True",
         choiceB : "False",
         choiceC : "Both",
@@ -71,8 +73,8 @@ let questions = [
         explination: "It is not necessary for any external javascript file to have <script> tag."
     },
     {
-        question: "Predict the output of the following JavaScript code.",
-        imgSrc  : "assets/numPlusString.png",
+        question: "Predict the output of the JavaScript code above.",
+        imgSrc  : "./assets/numPlusString.png",
         choiceA : "16",
         choiceB : "Complilation Error",
         choiceC : "88",
@@ -81,8 +83,8 @@ let questions = [
         explination: "In the above given code, 8+”8″ have first integer and second string data types. Rather than adding the two numbers, it concatenated the two."
     },
     {
-        question: "Predict the output of the following JavaScript code.",
-        imgSrc  : "assets/lastIndexOf.png",
+        question: "Predict the output of the JavaScript code above.",
+        imgSrc  : "./assets/lastIndexOf.png",
         choiceA : "8",
         choiceB : "0",
         choiceC : "9",
@@ -92,7 +94,7 @@ let questions = [
     },
     {
         question: "Which of the following is not a reserved word in JavaScript?",
-        imgSrc  : "assets/lastIndexOf.png",
+        imgSrc  : "./assets/JSLogo.png",
         choiceA : "interface",
         choiceB : "throws",
         choiceC : "program",
@@ -101,8 +103,8 @@ let questions = [
         explination: "In JavaScript, interface, throws and short are reserved keywords."
     },
     {
-        question: "Predict the output of the following JavaScript code.",
-        imgSrc  : "assets/eval.png",
+        question: "Predict the output of the JavaScript code above.",
+        imgSrc  : "./assets/eval.png",
         choiceA : '"30"',
         choiceB : "30",
         choiceC : "5*6",
@@ -112,25 +114,55 @@ let questions = [
     }
 ];
 
-let lastQuestionIndex = questions.length -1; //total number of questions
+const lastQuestionIndex = questions.length-1;//total number of questions
 
-// Random JavaSript Code Question with 4 choices 
+//JavaSript Code Question with 4 choices 
 function renderQuestion() {
+    
+    quiz.classList.remove("d-none");
+    quiz.style = "display: grid";
+    console.log(runningQuestionIndex);
     let ques = questions[runningQuestionIndex];
-   
-    question.innerHTML = "<p>" + ques.question + "</p>";
-    qImg.innerHTML = "<img src=" + ques.imgSrc + ">";
-    choiceA.innerHTML = ques.choiceA;
-    choiceB.innerHTML = ques.choiceB;
-    choiceC.innerHTML = ques.choiceC;
-    choiceD.innerHTML = ques.choiceD;
-    explination.innerHTML = ques.explination;
-}
+    //console.log(ques);
+    console.log("timer: ", timer);
+    if (timer > 0) { //if timer is not yet zero render a question
+        if (runningQuestionIndex <== lastQuestionIndex) { //if runningQuestionIndex is less than lastQuestionI render question
+            
+            console.log("In renderQuestion and timer now: ", timer);
+            question.innerHTML = "<p>" + ques.question + "</p>";
+            qImg.innerHTML = "<img src=" + ques.imgSrc + ">";
+            choiceA.innerHTML = ques.choiceA;
+            choiceB.innerHTML = ques.choiceB;
+            choiceC.innerHTML = ques.choiceC;
+            choiceD.innerHTML = ques.choiceD;
+            document.getElementById("correct").innerHTML = ques.correct;
+            explination.innerHTML = ques.explination;
+           
+        }
+    } 
+    else {
+         scoreRender(playerScore);
+    }
+}    
 
-function checkAnswer() {
-    if(questions[runningQuestionIndex].correct ==answer) {
-        score++;
-        answerIsTRight()
+function checkAnswer(answer) {
+    console.log(answer);
+    console.log(questions[runningQuestionIndex].correct);
+    if(questions[runningQuestionIndex].correct === answer) {
+        playerScore++;
+        
+        answerIsRight();
+    }
+    else {
+        document.getElementById("answer").style.display = "grid";
+        answerIsWrong();
+    }
+    if (runningQuestionIndex < lastQuestionIndex) {
+        //runningQuestionIndex++;
+        renderQuestion();
+    }
+    else{
+        scoreRender();
     }
 }
 
@@ -138,12 +170,22 @@ function answerIsRight(){
     //if user answer is correct play bing and display explination
     var audioElement = document.createElement("audio");
     audioElement.setAttribute("src", "assets/Bing.mp3");
+    playerScore++;
+    runningQuestionIndex++;
 
+}
+
+function answerIsWrong() {
     //if user answer is wrong play Buzzer and display explination
     var audioElement = document.createElement("audio");
     audioElement.setAttribute("src", "assets/Buzzer.mp3");
+    timer = timer -10;
+    runningQuestionIndex++;
 }
 
+function scoreRender(playerScore) {
+
+}
 // User clicks an answer: 
 // Correct Answer - sets off Bing sound and Increments playerScore
 // Incorrect answer - sets off Buzzer sound and subtracts 10 seconds from the timer
@@ -152,39 +194,35 @@ function answerIsRight(){
 // If playerScore is greater than last 10 scores on highScore
 // Offer player chance to enter Intials on highScore
 function timerStart(){
-   
+    document.getElementById("start").style.display = "none";//Hide the Start div
+    renderQuestion(); //render the first question
     var countDownTimer = setInterval(function(){
-      if(timer <= 0){
-        document.getElementById("start").style.display = "none";
-        document.getElementById("quiz").style.display = "none";
-        document.getElementById("answer").style.display = "none";
-        document.getElementById("scoreContainer").style.display = "grid";  
-        clearInterval(countDownTimer);
-        document.getElementById("timer").innerHTML = "Finished";
-      } else {
-        document.getElementById("timer").innerHTML ="Time: " + timer + " seconds";
-        document.getElementById("start").style.display = "none";
-        document.getElementById("quiz").style.display = "grid";
-        while(timer > 0) {
-            if (runningQuestionIndex < lastQuestionIndex) {
-                renderQuestion();
-                runningQuestionIndex++;
+         
+        if(timer <= 0){
+            clearInterval(countDownTimer);
+            document.getElementById("timer").innerHTML = "Finished";
+            quiz.style = "display: none";
+            playerScoreContainer.style = "display: grid";
+            playerScoreContainer.innerHTML = playerScore;
+        } else {
             
-            }
+            document.getElementById("timer").innerHTML ="Time: " + timer + " seconds";
+
         }
-      }
-      timer -= 1;
+        timer -= 1;
     }, 1000);    
 
 }
 
-
-document.getElementById("quiz").style.display = "grid"; 
+//document.getElementById("quiz").style.display = "grid"; 
 
 // Timer to start on "click" of Start Button.topline
-start.addEventListener("click",timerStart); 
+start.addEventListener("click",function() {
+    
+    timerStart();
+}); 
 
-lastQuestionIndex = questions.length -1;
+
 
 
 // Then end game
