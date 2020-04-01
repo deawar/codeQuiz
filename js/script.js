@@ -177,10 +177,10 @@ function init() {
     }
 
     //Render Highscores to the DOM
-    renderPlayerHighscores();
+    renderPlayerHighscores(playerHighScores);
 }
 
-function storeHighscores() {
+function storeHighscores(playerHighScores) {
     //Stringify and set "playerHighScores" key in localStorage to playerHighScores array
     localStorage.setItem("playerHighScores", JSON.stringify(playerHighScores));
 }
@@ -303,15 +303,20 @@ function scoreRender(timeleft, playerScore) {
         console.log("playerScore & timer: ", playerScore, timer);
         var playerScore = playerScore + parseInt(timeleft);
         console.log("Added extra time to playerScore: ", playerScore);
+        document.getElementById("playerScore").innerHTML = "Score: " + playerScore;
         var audio = new Audio('./assets/correct-answer-cheer.mp3');
         audio.play();
-        //var timer = 0;
+        
     } else { //don't play celebratory mp3
         console.log("In scoreRender Else playerScore: ", playerScore);
         var playerScore = playerScore;
     }
-    function getPlayerInitials(){
-        playerInitial.addEventListener("submit", function(event) {
+    
+    //get player's input now
+    getPlayerInitials(playerScore);
+
+    function getPlayerInitials(playerScore){
+        playerIntialsInput.addEventListener("submit", function(event) {
             event.preventDefault();
             console.log("in getPlayerInitials Function");
             var playerIntialForm = playerIntialsInput.value.trim();
@@ -337,12 +342,12 @@ function scoreRender(timeleft, playerScore) {
             playerScore.value ="";
 
             //Store updated playerHighScores in localStorage, re-render the list
-            storeHighscores();
-            renderPlayerHighscores();
+            storeHighscores(playerHighScores);
+            renderPlayerHighscores(playerHighScores);
         });
     }
     
-    //document.getElementById("olPlayerscore").innerHTML = playerScore;
+    document.getElementById("playerScore").innerHTML = "Score: " + playerScore;
     
 }
 // User clicks an answer: 
