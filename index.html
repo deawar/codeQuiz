@@ -10,9 +10,9 @@
 <body>
     <div class="row mb-10px topline">
         <div class="col-2 pl-4" id="highScores">
-            <a href="#"> View HighScores</a>
+            <a href="#" id="view-highscore"> View HighScores</a>
         </div>
-        <div class="col-7"></div>
+        <div class="col-7" ><span id="playerScore"></span></div>
         <div class="col-3 pl-5" id="timer">
             Time: <span>75</span> seconds 
         </div>
@@ -47,24 +47,46 @@
                             <li class="choice btn btn-primary btn-block" id="D" onclick="checkAnswer('D')"></li>
                         </ul>
                     </div>
-                    <div id="answer" style="display:none;">
+                    <div class="alert-warning d-none" id="answer">
                         <div id="correct"></div>
                         <div id="explination"></div>
+                        <a class="btn btn-primary btn-lg" id="continue" href="#" role="button">Continue</a>
                     </div>
                 </div>
             </div>
             <!-- Player's Score Container -->
-            <div id="playerScoreContainer" style="display:none;">You Scored: <span></span></div>
-            
+           
             <!-- HighScore Container  -->
-            <div class="card w-75 d-none" id="scoreContainer">
-                <h2>High Score Hall of Fame</h2>
-            <ul>
-                <li></li>
-            </ul>
-
+            <div class="container">
+                <div class="card w-75 col-md-auto d-none" id="scoreContainer">
+                    <h2>High Score Hall of Fame</h2>
+                    <hr>
+                    <p>HighScore Count: <span id="highscore-count">0</span></p>
+                    <form id="playerIntial-form" method="POST">
+                        <label for="playerIntialForm">Enter your Intials:</label>
+                        <input type="text"placeholder="ABC"  name="playerIntialInput" id="playerIntialInput">
+                    </form>
+                    <div class="row">
+                        <div class="col-sm">
+                        Player's Initials
+                        </div>
+                        
+                        <div class="col-sm">
+                        Player's Score
+                        </div>
+                        <hr>
+                    </div>
+                    
+                    <div class="row" id="playerHighscoreslist">
+                        <div class="col-sm"  id="olPlayer">
+                            <span>AAA</span>
+                        </div>
+                        <div class="col-sm" id="olPlayerscore">
+                            <span></span>
+                        </div>
+                    </div>
+                </div>
             </div>
-
         </div>
     </div>
      

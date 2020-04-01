@@ -3,22 +3,30 @@
 // GT Full Stack Flex Class Winter-Spring 2020
 var timer = 75;
 var playerScore = 0;
-var highScore; //to be defined
+var playerHighScores = []; //Empty array to be filled.
 let runningQuestionIndex = 0; //keeps track of how many questions have been asked
-
+var highscoreCountSpan = document.querySelector("#highscore-count");
+var playerHighscoreslist = document.querySelector("#playerHighscoreslist");
+var playerIntialsInput = document.querySelector("#playerIntialInput"); 
+// var playerHighscores = {
+//     playerInitals: playerIntialsInput.value.trim(),
+//     playerScores: playerScore.value.trim()
+// };
 const quiz = document.getElementById("quiz");
 const qImg = document.getElementById("qImage");
 const question = document.getElementById("question");
 //const timeGauge = document.getElementById("timeGauge");
 let mySound;
+const view_highscore = document.getElementById("view-highscore");
 const start = document.getElementById("startBtn");
+const continueBtn = document.getElementById("continue");
 const choiceA = document.getElementById("A");
 const choiceB = document.getElementById("B");
 const choiceC = document.getElementById("C");
 const choiceD = document.getElementById("D");
 const answer = document.getElementById("answer");
 const explination = document.getElementById("explination");
-const playerScoreContainer = document.getElementById("playerScoreContainer");
+const playerScoreContainer = document.getElementById("playerScore");
 const scoreContainer = document.getElementById("scoreContainer");
 
 const questions = [
@@ -111,23 +119,108 @@ const questions = [
         choiceD : '"5*6"',
         correct : "B",
         explination: "eval command will evaluate the operation. Here it is 5*6=30."
+    },
+    {
+        question: "What is the syntax for creating a function in JavaScript named as Geekfunc?",
+        imgSrc  : "./assets/JSLogo.png",
+        choiceA : '"function = Geekfunc()"',
+        choiceB : "function Geekfunc()",
+        choiceC : "function := Geekfunc()",
+        choiceD : '"function : Geekfunc()"',
+        correct : "B",
+        explination: "In JavaScript, function is defined as ‘function x()’."
     }
 ];
 
-const lastQuestionIndex = questions.length-1;//total number of questions
+const lastQuestionIndex = questions.length;//total number of questions
+console.log("questions.length: ", questions.length);
+console.log("lastQuestionIndex: ", lastQuestionIndex);
+
+init();
+
+function renderPlayerHighscores() {
+    //Clear Highscore list and update scores.
+   document.querySelector("#playerHighscoreslist").innerHTML = "";
+    //highscoreCountSpan.textContent = playerHighScores.length;
+    console.log("In renderPlayerHighscores");
+    //ReOrder list from highest to lowest
+    //https://stackoverflow.com/questions/979256/sorting-an-array-of-objects-by-property-values
+    // playerHighScores.sort(function(a, b) {
+    //     return parseFloat(a.playerScores) - parseFloat(b.playerScores);
+    // });
+ 
+    for (var i = 0; i < playerHighScores.length; i++) {
+        var playerHighscore = playerHighScores[i].playerScores;
+        var playerInitial = playerHighScores[i].playerIntials;
+        console.log("for Loop: ", i);
+        var row = `<div class="row">
+                        <div class="col-sm"  id="olPlayer">
+                            <span>${playerInitial}</span>
+                        </div>
+                        <div class="col-sm" id="olPlayerscore">
+                            <span>${playerHighscore}</span>
+                        </div>
+                    </div>`;
+        playerHighscoreslistocumentappendChild(row);
+    }
+
+}
+
+function init() {
+    //Get stored Highscores from localStorage
+    //Parsing the JSON string to an Object
+    var storedHighscores = JSON.parse(localStorage.getItem("playerHighScores"));
+
+    //if playerHighScores were retrieved from localStorage, update the playerHighScores array
+    if (storedHighscores !== null) {
+        playerHighScores = storedHighscores;
+    }
+
+    //Render Highscores to the DOM
+    renderPlayerHighscores();
+}
+
+function storeHighscores() {
+    //Stringify and set "playerHighScores" key in localStorage to playerHighScores array
+    localStorage.setItem("playerHighScores", JSON.stringify(playerHighScores));
+}
+
+
+
+//Timer is started
+function timerStart(){
+    document.getElementById("start").style.display = "none";//Hide the Start div
+    renderQuestion(); //render the first question
+    var countDownTimer = setInterval(function(){
+         
+        if(timer <= 0){
+            clearInterval(countDownTimer);
+            document.getElementById("timer").innerHTML = "Finished";
+            document.getElementById("quiz").style = "display: none";
+            document.querySelector("#playerScore").textContent = playerScore;
+            //playerScoreContainer.innerHTML = playerScore;
+        } else {
+            
+            document.getElementById("timer").innerHTML ="Time: " + timer + " seconds";
+
+        }
+        timer -= 1;
+    }, 1000);    
+
+}
 
 //JavaSript Code Question with 4 choices 
 function renderQuestion() {
     
-    quiz.classList.remove("d-none");
+    quiz.classList.remove("d-none");//show Quiz Div
     quiz.style = "display: grid";
-    console.log(runningQuestionIndex);
+    console.log("runningQuestionIndex: ",runningQuestionIndex); //current question Index
     let ques = questions[runningQuestionIndex];
-    //console.log(ques);
+    
     console.log("timer: ", timer);
     if (timer > 0) { //if timer is not yet zero render a question
-        if (runningQuestionIndex <== lastQuestionIndex) { //if runningQuestionIndex is less than lastQuestionI render question
-            
+        if (runningQuestionIndex < lastQuestionIndex) { //if runningQuestionIndex is less than lastQuestionI render question
+            console.log("In renderQuestion runningQuestionIndex: ", runningQuestionIndex);
             console.log("In renderQuestion and timer now: ", timer);
             question.innerHTML = "<p>" + ques.question + "</p>";
             qImg.innerHTML = "<img src=" + ques.imgSrc + ">";
@@ -141,7 +234,7 @@ function renderQuestion() {
         }
     } 
     else {
-         scoreRender(playerScore);
+         scoreRender(timer, playerScore);
     }
 }    
 
@@ -149,12 +242,13 @@ function checkAnswer(answer) {
     console.log(answer);
     console.log(questions[runningQuestionIndex].correct);
     if(questions[runningQuestionIndex].correct === answer) {
-        playerScore++;
+        //playerScore++;
         
         answerIsRight();
     }
     else {
         document.getElementById("answer").style.display = "grid";
+        
         answerIsWrong();
     }
     if (runningQuestionIndex < lastQuestionIndex) {
@@ -162,29 +256,88 @@ function checkAnswer(answer) {
         renderQuestion();
     }
     else{
-        scoreRender();
+        scoreRender(timer, playerScore);
     }
 }
 
 function answerIsRight(){
+    console.log("RightAnswer Function");
     //if user answer is correct play bing and display explination
-    var audioElement = document.createElement("audio");
-    audioElement.setAttribute("src", "assets/Bing.mp3");
+    var audio = new Audio('./assets/Bing.mp3');
+    audio.play();
     playerScore++;
+    console.log("Just updated playerScore: ", playerScore);
     runningQuestionIndex++;
+    //document.getElementById("playerScore").innerHTML = ("Score: " + playerScore);
+    //playerScoreContainer.innerHTML = playerScore;
+    console.log("Right answer-Just updated runningQuestionIndex: ", runningQuestionIndex);
 
 }
 
 function answerIsWrong() {
+    console.log("WrongAnswer Function");
     //if user answer is wrong play Buzzer and display explination
-    var audioElement = document.createElement("audio");
-    audioElement.setAttribute("src", "assets/Buzzer.mp3");
-    timer = timer -10;
+    var audio = new Audio('./assets/Buzzer.mp3');
+    audio.play();
+    timer = timer -10;//deduct 10 seconds from timer
+    continueBtn.addEventListener("click",function() {
+    //    document.getElementById("answer").remove("d-none");
+    //    document.getElementById("answer").setAttribute("class: d-block");
+        
+    }); 
+    
+    //answer.style.backgroundColor ="light yellow";
+    
     runningQuestionIndex++;
+    console.log("Wrong answer-Just updated runningQuestionIndex: ", runningQuestionIndex);
 }
 
-function scoreRender(playerScore) {
+function scoreRender(timeleft, playerScore) {
+    var liScore = "<li>" + playerScore + "</li>;" 
+    
+    scoreContainer.classList.remove("d-none");//show scoreContainer Div
+    quiz.style = "display: none";
+    scoreContainer.style.display = "grid";
+    console.log("In scoreRender and Timer now at :", timer);
+    if (timer > 0) {
+        console.log("playerScore: ", playerScore);
+        var playerScore = playerScore + parseInt(timeleft);
+        console.log("Added extra time to playerScore: ", playerScore);
+        var audio = new Audio('./assets/correct-answer-cheer.mp3');
+        audio.play();
+        //var timer = 0;
+    }
+    function getPlayerInitials(){
+        playerInitial.addEventListener("submit", function(event) {
+            event.preventDefault();
+            console.log("in getPlayerInitials Function");
+            var playerIntialForm = playerIntialsInput.value.trim();
+            console.log("intials entered: ",playerIntialForm);
+            //return early if no input
+            if (playerIntialForm === "") {
+                return;
+            } else if (playerIntialForm.length > 3) {
+                playerIntialForm = playerIntialForm.slice(0, 3);
+            }
+            
+            //Add new playerIntialForm to playerHighScores array, clear input
+            var myJson = {
+                "playerInitals" : playerIntialForm,
+                "playerScores" : playerScore
+            }
+            console.log("playerIntialForm: ", playerIntialForm, "playerCores: ", playerScores);     
+            playerHighScores.push(myJson);
+            playerIntialForm.value = "";
+            playerScore.value ="";
 
+            //Store updated playerHighScores in localStorage, re-render the list
+            storeHighscores();
+            renderPlayerHighscores();
+        });
+    }
+    
+    //document.getElementById("olPlayerscore").innerHTML = playerScore;
+    
 }
 // User clicks an answer: 
 // Correct Answer - sets off Bing sound and Increments playerScore
@@ -193,26 +346,7 @@ function scoreRender(playerScore) {
 // Else stop game and display playerScore --> store playerScore
 // If playerScore is greater than last 10 scores on highScore
 // Offer player chance to enter Intials on highScore
-function timerStart(){
-    document.getElementById("start").style.display = "none";//Hide the Start div
-    renderQuestion(); //render the first question
-    var countDownTimer = setInterval(function(){
-         
-        if(timer <= 0){
-            clearInterval(countDownTimer);
-            document.getElementById("timer").innerHTML = "Finished";
-            quiz.style = "display: none";
-            playerScoreContainer.style = "display: grid";
-            playerScoreContainer.innerHTML = playerScore;
-        } else {
-            
-            document.getElementById("timer").innerHTML ="Time: " + timer + " seconds";
 
-        }
-        timer -= 1;
-    }, 1000);    
-
-}
 
 //document.getElementById("quiz").style.display = "grid"; 
 
@@ -222,7 +356,10 @@ start.addEventListener("click",function() {
     timerStart();
 }); 
 
-
+view_highscore.addEventListener("click",function() {
+    
+    scoreRender(0, 0);
+}); 
 
 
 // Then end game
