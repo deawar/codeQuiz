@@ -152,7 +152,7 @@ function renderPlayerHighscores() {
     for (var i = 0; i < playerHighScores.length; i++) {
         var playerHighscore = playerHighScores[i].playerScores;
         var playerInitial = playerHighScores[i].playerIntials;
-        console.log("for Loop: ", i);
+        console.log("renderPlayerHighscores for Loop: ", i);
         var row = `<div class="row">
                         <div class="col-sm"  id="olPlayer">
                             <span>${playerInitial}</span>
@@ -188,7 +188,7 @@ function storeHighscores() {
 
 
 //Timer is started
-function timerStart(){
+function timerStart(timer){
     document.getElementById("start").style.display = "none";//Hide the Start div
     renderQuestion(); //render the first question
     var countDownTimer = setInterval(function(){
@@ -299,13 +299,16 @@ function scoreRender(timeleft, playerScore) {
     quiz.style = "display: none";
     scoreContainer.style.display = "grid";
     console.log("In scoreRender and Timer now at :", timer);
-    if (timer > 0) {
-        console.log("playerScore: ", playerScore);
+    if (timer !== 0) {
+        console.log("playerScore & timer: ", playerScore, timer);
         var playerScore = playerScore + parseInt(timeleft);
         console.log("Added extra time to playerScore: ", playerScore);
         var audio = new Audio('./assets/correct-answer-cheer.mp3');
         audio.play();
         //var timer = 0;
+    } else { //don't play celebratory mp3
+        console.log("In scoreRender Else playerScore: ", playerScore);
+        var playerScore = playerScore;
     }
     function getPlayerInitials(){
         playerInitial.addEventListener("submit", function(event) {
@@ -321,12 +324,15 @@ function scoreRender(timeleft, playerScore) {
             }
             
             //Add new playerIntialForm to playerHighScores array, clear input
-            var myJson = {
+            // var myJson = {
+            //     "playerInitals" : playerIntialForm,
+            //     "playerScores" : playerScore
+            // }
+            console.log("playerIntialForm: ", playerIntialForm, "playerCores: ", playerScores);     
+            playerHighScores.push({
                 "playerInitals" : playerIntialForm,
                 "playerScores" : playerScore
-            }
-            console.log("playerIntialForm: ", playerIntialForm, "playerCores: ", playerScores);     
-            playerHighScores.push(myJson);
+            });
             playerIntialForm.value = "";
             playerScore.value ="";
 
@@ -348,17 +354,19 @@ function scoreRender(timeleft, playerScore) {
 // Offer player chance to enter Intials on highScore
 
 
-//document.getElementById("quiz").style.display = "grid"; 
+document.getElementById("quiz").style.display = "grid"; 
 
 // Timer to start on "click" of Start Button.topline
 start.addEventListener("click",function() {
-    
-    timerStart();
+    timer = 75;
+    timerStart(timer);
 }); 
 
 view_highscore.addEventListener("click",function() {
-    
-    scoreRender(0, 0);
+    timer = 0;
+    document.getElementById("start").style.display = "none";
+    quiz.style = "display: none";
+    scoreRender(timer, 0);
 }); 
 
 
